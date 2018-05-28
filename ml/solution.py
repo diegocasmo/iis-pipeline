@@ -9,7 +9,7 @@ from constants import get_all_emotions
 
 def predict_emotion(points, debug=False):
   # Sample data, do not ship
-  data_df = pd.read_csv(r'../../data/lm3.csv')
+  data_df = pd.read_csv(r'./reference.csv')
   data_df = data_df.dropna(axis=1, how='any')
   features = [x != 'Label' for x in data_df.columns.values]
   all_values = data_df.loc[:, features].values
