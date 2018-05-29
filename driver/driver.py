@@ -19,7 +19,7 @@ def handle_features(pos, debug=False):
   return pos
 
 if __name__ == '__main__':
-  debug = false
+  debug = False
   A = fd.FeatureReader()
   try:
     while True:
