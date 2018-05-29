@@ -7,7 +7,7 @@ from sklearn.preprocessing import normalize
 
 from constants import get_all_emotions
 
-def predict_emotion(points, debug=False):
+def predict_emotion(points, directory='./', debug=False):
   # Sample data, do not ship
   # data_df = pd.read_csv(r'./reference.csv')
   # data_df = data_df.dropna(axis=1, how='any')
@@ -22,13 +22,13 @@ def predict_emotion(points, debug=False):
   all_values = normalize([points], axis=1)
 
   # Load PCA model and transform input
-  pca = joblib.load('pca-model.pkl')
+  pca = joblib.load(directory + 'pca-model.pkl')
   principal_components = pca.transform(all_values)
   if debug:
     print(principal_components)
 
   # Load SVM model and predict probability
-  svm = joblib.load('svm-model.pkl')
+  svm = joblib.load(directory + 'svm-model.pkl')
   predicted_labels = svm.predict_proba(principal_components)[0]
 
   # Assign each score to its label

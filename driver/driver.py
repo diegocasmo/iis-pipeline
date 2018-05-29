@@ -34,7 +34,7 @@ if __name__ == '__main__':
       # predict emotions
       emotion_predictions = predict_emotion(pos)
       if debug:
-        print(emotion_predictions)
+        print(emotion_predictions, directory='../ml/', debug=debug)
 
       # create emotions
       # something furnet...
