@@ -24,7 +24,7 @@ if __name__ == '__main__':
     print('Debug ON')
     debug = True
 
-  A = fd.FeatureReader()
+  A = fd.FeatureReader("../vision/")
   try:
     while True:
       # fetch camera images and tag landmarks
