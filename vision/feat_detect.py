@@ -6,7 +6,7 @@ from scipy.misc import imresize
 from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score
 
-def read_file(filename):
+def read_file(filename, dir_path = "./"):
 	"""
 	Returns flattened images from files with filenames
 	contained in the file with passed filename
@@ -26,6 +26,7 @@ def read_file(filename):
 		if len(line) > 0:
 			if line[0] == '#': # lines starting with '#' are comments
 				continue
+			line = dir_path + line
 			im = cv2.imread(line, cv2.IMREAD_COLOR)
 			if im is not None:
 				#convert to grayscale
@@ -150,7 +151,7 @@ class FeatureReader:
 	"""
 
 
-	def __init__ (self):
+	def __init__ (self, dir_path = "./"):
 
 		# a black background image
 		#image_size = (1280,720)
@@ -180,6 +181,11 @@ class FeatureReader:
 		ffilenames = ["chin_middle.txt", "inner_left_eyebrow.txt", "inner_left_eye_corner.txt", "inner_right_eyebrow.txt", "inner_right_eye_corner.txt", "left_ear_lobe.txt", "left_mouth_corner.txt", "left_nose_peak.txt", "left_temple.txt", "lower_lip_inner_middle.txt", "lower_lip_outer_middle.txt", "middle_left_eyebrow.txt", "middle_right_eyebrow.txt", "nose_saddle_left.txt", "nose_saddle_right.txt", "nose_tip.txt", "outer_left_eyebrow.txt", "outer_left_eye_corner.txt", "outer_right_eyebrow.txt", "outer_right_eye_corner.txt", "right_ear_lobe.txt", "right_mouth_corner.txt", "right_nose_peak.txt", "right_temple.txt", "upper_lip_outer_middle.txt"]
 		nfilenames = ["nchin_middle.txt", "ninner_left_eyebrow.txt", "ninner_left_eye_corner.txt", "ninner_right_eyebrow.txt", "ninner_right_eye_corner.txt", "nleft_ear_lobe.txt", "nleft_mouth_corner.txt", "nleft_nose_peak.txt", "nleft_temple.txt", "nlower_lip_inner_middle.txt", "nlower_lip_outer_middle.txt", "nmiddle_left_eyebrow.txt", "nmiddle_right_eyebrow.txt", "nnose_saddle_left.txt", "nnose_saddle_right.txt", "nnose_tip.txt", "nouter_left_eyebrow.txt", "nouter_left_eye_corner.txt", "nouter_right_eyebrow.txt", "nouter_right_eye_corner.txt", "nright_ear_lobe.txt", "nright_mouth_corner.txt", "nright_nose_peak.txt", "nright_temple.txt", "nupper_lip_outer_middle.txt"]
 
+		for i in range(len(ffilenames)):
+			ffilenames[i] = dir_path + ffilenames[i]
+		for i in range(len(nfilenames)):
+			nfilenames[i] = dir_path + nfilenames[i]
+
 		self.fclassifiers = []
 		self.nfeats = len(ffilenames)
 		self.history = np.empty((1,self.nfeats,3))
@@ -187,11 +193,11 @@ class FeatureReader:
 		# for each feature:
 		for i in range(len(ffilenames)):
 			if i == 0:
-				self.fclassifiers.append('nan')
+				self.fclassifiers.append(float('nan'))
 				continue #TODO skipping chin_middle
 			# Read training data
-			fdata = read_file(ffilenames[i])
-			ndata = read_file(nfilenames[i])
+			fdata = read_file(ffilenames[i], dir_path)
+			ndata = read_file(nfilenames[i], dir_path)
 			# Train classifier
 			self.fclassifiers.append(train_classifier(fdata, ndata, 1, ffilenames[i], testclassifier=False))
 
