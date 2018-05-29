@@ -9,16 +9,16 @@ from constants import get_all_emotions
 
 def predict_emotion(points, debug=False):
   # Sample data, do not ship
-  data_df = pd.read_csv(r'./reference.csv')
-  data_df = data_df.dropna(axis=1, how='any')
-  features = [x != 'Label' for x in data_df.columns.values]
-  all_values = data_df.loc[:, features].values
-  r = all_values[0]
+  # data_df = pd.read_csv(r'./reference.csv')
+  # data_df = data_df.dropna(axis=1, how='any')
+  # features = [x != 'Label' for x in data_df.columns.values]
+  # all_values = data_df.loc[:, features].values
+  # r = all_values[0]
   if debug:
-    print(r)
+    print(points)
 
   # Normalize
-  all_values = normalize([r], axis=1)
+  all_values = normalize([points], axis=1)
 
   # Load PCA model and transform input
   pca = joblib.load('pca-model.pkl')
@@ -38,9 +38,10 @@ def predict_emotion(points, debug=False):
 
   if debug:
     print(confidence)
+  return (confidence)
   # Output to json file.
-  with open('emotion-output.json', 'w') as outfile:
-    json.dump(confidence, outfile)
+  # with open('emotion-output.json', 'w') as outfile:
+    # json.dump(confidence, outfile)
 
 if __name__ == '__main__':
   predict_emotion(None, debug=True)
