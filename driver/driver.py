@@ -20,7 +20,7 @@ def handle_features(pos, debug=False):
 
 if __name__ == '__main__':
   debug = False
-  A = fd.FeatureReader()
+  A = fd.FeatureReader("../vision")
   try:
     while True:
       # fetch camera images and tag landmarks
