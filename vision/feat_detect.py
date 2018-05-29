@@ -19,6 +19,7 @@ def read_file(filename):
 	"""
 
 	infile = open(filename)
+
 	outdata = []
 	for line in infile:
 		line = line[:-1]
@@ -38,7 +39,7 @@ def read_file(filename):
 				im.flatten()
 				outdata.append(im)
 			else:
-				print("Bad input line: " + line +" in file " + nfilename)
+				print("Bad input line: " + str(line) + " in file " + filename + " ")
 	infile.close()
 	return outdata
 
@@ -185,6 +186,9 @@ class FeatureReader:
 
 		# for each feature:
 		for i in range(len(ffilenames)):
+			if i == 0:
+				self.fclassifiers.append('nan')
+				continue #TODO skipping chin_middle
 			# Read training data
 			fdata = read_file(ffilenames[i])
 			ndata = read_file(nfilenames[i])
@@ -224,7 +228,6 @@ class FeatureReader:
 				cv2.rectangle(self.image, (x,y),(x+w,y+h), (255,0,0), 2)
 				# create a rescaled copy of the rectangle, and the corresponding depth rectangle
 				im = cv2.resize(gray_image_uint[y:y+h, x:x+w], (512,512))
-				#im = cv2.resize(self.image[y:y+h, x:x+w], (512,512)) #TODO this line or the line above?
 				imd = cv2.resize(depth_image[y:y+h, x:x+w], (512,512))
 				# find point closest to camera, since that should be the nose
 				nose_index_x, nose_index_y = closest_point(imd)
@@ -237,11 +240,13 @@ class FeatureReader:
 
 				# upper left quadrant
 				# create smaller rectangles based on the large rectangles, with overlap
-				classifier_indices = [3, 4, 12, 14, 18, 19, 23] # which classifiers are relevant for the quadrant?
+				classifier_indices = [1, 2, 8, 11, 13, 16, 17] # which classifiers are relevant for the quadrant?
 				chunks = sd.subdivide(im[:nose_index_y, :nose_index_x], quad_width_x, quad_width_y, quad_freq_x, quad_freq_y)
 				chunks = np.asarray(chunks)
 				chunks = chunks.reshape((len(chunks) ,-1))
 				for i in classifier_indices:
+					if i == 0:
+						continue #TODO skipping chin_middle
 					confidence_scores = self.fclassifiers[i].decision_function(chunks)
 					pos = np.argmin(confidence_scores)
 					x_quadrant, y_quadrant = np.unravel_index(pos, (2*quad_freq_x-1, 2*quad_freq_y-1))
@@ -256,14 +261,14 @@ class FeatureReader:
 
 				# upper right quadrant
 				# create smaller rectangles based on the large rectangles, with overlap
-				classifier_indices = [1, 2, 8, 11, 13, 16, 17] # which classifiers are relevant for the quadrant?
+				classifier_indices = [3, 4, 12, 14, 18, 19, 23] # which classifiers are relevant for the quadrant?
 				chunks = sd.subdivide(im[:nose_index_y, nose_index_x:], quad_width_x, quad_width_y, quad_freq_x, quad_freq_y)
 				chunks = np.asarray(chunks)
 				chunks = chunks.reshape((len(chunks) ,-1))
 				for i in classifier_indices:
+					if i == 0:
+						continue #TODO skipping chin_middle
 					confidence_scores = self.fclassifiers[i].decision_function(chunks)
-					#TODO test the following line. If it works better, copy to the other quadrants
-					#pos = np.argmin(np.ma.where(confidence_scores >= 0))
 					pos = np.argmin(confidence_scores)
 					x_quadrant, y_quadrant = np.unravel_index(pos, (2*quad_freq_x-1, 2*quad_freq_y-1))
 					x_quadrant = (quad_width_x/2) * (x_quadrant+1)
@@ -277,11 +282,13 @@ class FeatureReader:
 
 				# lower left quadrant
 				# create smaller rectangles based on the large rectangles, with overlap
-				classifier_indices = [0, 9, 10, 15, 20, 21, 22, 24] # which classifiers are relevant for the quadrant?
+				classifier_indices = [0, 5, 6, 7, 15, 24] # which classifiers are relevant for the quadrant?
 				chunks = sd.subdivide(im[nose_index_y:, :nose_index_x], quad_width_x, quad_width_y, quad_freq_x, quad_freq_y)
 				chunks = np.asarray(chunks)
 				chunks = chunks.reshape((len(chunks) ,-1))
 				for i in classifier_indices:
+					if i == 0:
+						continue #TODO skipping chin_middle
 					confidence_scores = self.fclassifiers[i].decision_function(chunks)
 					pos = np.argmin(confidence_scores)
 					x_quadrant, y_quadrant = np.unravel_index(pos, (2*quad_freq_x-1, 2*quad_freq_y-1))
@@ -296,11 +303,13 @@ class FeatureReader:
 
 				# lower right quadrant
 				# create smaller rectangles based on the large rectangles, with overlap
-				classifier_indices = [5, 6, 7] # which classifiers are relevant for the quadrant?
+				classifier_indices = [9, 10, 20, 21, 22] # which classifiers are relevant for the quadrant?
 				chunks = sd.subdivide(im[nose_index_y:, nose_index_x:], quad_width_x, quad_width_y, quad_freq_x, quad_freq_y)
 				chunks = np.asarray(chunks)
 				chunks = chunks.reshape((len(chunks) ,-1))
 				for i in classifier_indices:
+					if i == 0:
+						continue #TODO skipping chin_middle
 					confidence_scores = self.fclassifiers[i].decision_function(chunks)
 					pos = np.argmin(confidence_scores)
 					x_quadrant, y_quadrant = np.unravel_index(pos, (2*quad_freq_x-1, 2*quad_freq_y-1))
@@ -312,6 +321,7 @@ class FeatureReader:
 					xpos, ypos = (int(x_im * scale_x) + x, int(y_im * scale_y) + y)
 					zpos = depth_image[ypos,xpos]
 					outdata[i] = [xpos,ypos,zpos]
+				outdata[0] = [float('nan'), float('nan'), float('nan')]
 				
 		# Create mask
 		mask = np.ones((self.image.shape[0],self.image.shape[1]))
@@ -332,6 +342,11 @@ class FeatureReader:
 		
 		arr = np.asarray(arr)
 		for i in range(len(arr)):
+			if np.isnan(arr[i][0]) or np.isnan(arr[i][1]):
+				continue
+			if i == 2:
+				cv2.circle(self.image, (int(round(arr[i][0])),int(round(arr[i][1]))), 2, (0,0,255), -1)
+				continue
 			cv2.circle(self.image, (int(round(arr[i][0])),int(round(arr[i][1]))), 2, (0,255,0), -1)
 
 	def displayimage(self):
@@ -342,32 +357,6 @@ class FeatureReader:
 		# Show images
 		cv2.imshow(self.windowname, self.image)
 		cv2.waitKey(1)
-
-	def median_frames(self,pos,depth=5):
-		"""
-		Returns the median feature positions of recent frames
-
-		Args:
-			pos(list of list of int): List of the most recent feature positions
-			depth(int): The number of previous iterations to remember
-
-		Returns:
-			list of list of int: List of the median feature positions
-		"""
-
-		if len(self.history) < depth:
-			outpos = np.expand_dims(pos, 0)
-			self.history = np.concatenate((self.history, outpos), 0)
-			return pos
-
-		if len(self.history) >= depth:
-			self.history = np.delete(self.history, 0, 0)
-		pos = np.expand_dims(pos, 0)
-		self.history = np.concatenate((self.history, pos), 0)
-
-		outdata = [list(map(lambda i: np.median(self.history[:,i,0]), range(self.nfeats))), list(map(lambda i: np.median(self.history[:,i,1]), range(self.nfeats))), list(map(lambda i: np.median(self.history[:,i,2]), range(self.nfeats)))]
-		outdata = np.transpose(outdata)
-		return outdata
 
 	def avrg_frames(self,pos,depth=5):
 		"""
@@ -391,7 +380,7 @@ class FeatureReader:
 		pos = np.expand_dims(pos, 0)
 		self.history = np.concatenate((self.history, pos), 0)
 
-		outdata = [list(map(lambda i: np.average(self.history[:,i,0]), range(self.nfeats))), list(map(lambda i: np.average(self.history[:,i,1]), range(self.nfeats))), list(map(lambda i: np.average(self.history[:,i,2]), range(self.nfeats)))]
+		outdata = [list(map(lambda i: np.nanmean(self.history[:,i,0]), range(self.nfeats))), list(map(lambda i: np.nanmean(self.history[:,i,1]), range(self.nfeats))), list(map(lambda i: np.nanmean(self.history[:,i,2]), range(self.nfeats)))]
 		outdata = np.transpose(outdata)
 		return outdata
 

@@ -1,0 +1,24 @@
+# Generated with script data_label.py
+./images2/23.png
+./images2/71.png
+./images2/119.png
+./images2/165.png
+./images2/211.png
+./images2/257.png
+./images2/304.png
+./images2/352.png
+./images2/400.png
+./images2/448.png
+./images2/496.png
+./images2/544.png
+./images2/590.png
+./images2/638.png
+./images2/686.png
+./images2/732.png
+./images2/780.png
+./images2/828.png
+./images2/876.png
+./images2/920.png
+./images2/962.png
+./images2/1006.png
+./images2/1050.png
