@@ -32,9 +32,9 @@ if __name__ == '__main__':
         A.displayimage()
 
       # predict emotions
-      emotion_predictions = predict_emotion(pos)
+      emotion_predictions = predict_emotion(pos, directory='../ml/', debug=debug)
       if debug:
-        print(emotion_predictions, directory='../ml/', debug=debug)
+        print(emotion_predictions)
 
       # create emotions
       # something furnet...
