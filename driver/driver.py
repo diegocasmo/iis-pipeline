@@ -20,6 +20,10 @@ def handle_features(pos, debug=False):
 
 if __name__ == '__main__':
   debug = False
+  if len(sys.argv) > 1 and sys.argv[1] == '1':
+    print('Debug ON')
+    debug = True
+
   A = fd.FeatureReader()
   try:
     while True:
