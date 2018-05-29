@@ -163,7 +163,7 @@ class FeatureReader:
 		cv2.namedWindow(self.windowname, cv2.WINDOW_AUTOSIZE)
 
 		# the trained haar-cascade classifier data
-		self.face_cascade = cv2.CascadeClassifier('frontal_face_features.xml')
+		self.face_cascade = cv2.CascadeClassifier(dir_path + 'frontal_face_features.xml')
 
 		# configure the realsense camera
 		self.pipeline = rs.pipeline()
