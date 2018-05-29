@@ -14,6 +14,7 @@ def predict_emotion(points, debug=False):
   # features = [x != 'Label' for x in data_df.columns.values]
   # all_values = data_df.loc[:, features].values
   # r = all_values[0]
+  points = np.array(points).flatten()
   if debug:
     print(points)
 
