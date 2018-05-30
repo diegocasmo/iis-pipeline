@@ -339,7 +339,7 @@ class FeatureReader:
 		for i in range(len(arr)):
 			if np.isnan(arr[i][0]) or np.isnan(arr[i][1]):
 				continue
-			if i == 2:
+			if i == 3:
 				cv2.circle(self.image, (int(round(arr[i][0])),int(round(arr[i][1]))), 2, (0,0,255), -1)
 				continue
 			cv2.circle(self.image, (int(round(arr[i][0])),int(round(arr[i][1]))), 2, (0,255,0), -1)
