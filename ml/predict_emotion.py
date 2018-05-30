@@ -7,6 +7,12 @@ from sklearn.preprocessing import normalize
 
 from constants import get_all_emotions
 
+def rearrange(arr, indexes):
+  out = []
+  for ind in indexes:
+    out.append(arr[ind])
+  return out
+
 def predict_emotion(points, directory='./', debug=False):
   # Sample data, do not ship
   # data_df = pd.read_csv(r'./reference.csv')
@@ -14,7 +20,12 @@ def predict_emotion(points, directory='./', debug=False):
   # features = [x != 'Label' for x in data_df.columns.values]
   # all_values = data_df.loc[:, features].values
   # r = all_values[0]
-  points = np.array(points).flatten()
+  inds = [12, 7,  0, 2,  8,
+          14, 13, 1, 3,  15,
+          9,  10, 5, 11, 17,
+          4,  18, 16, 6]
+  points = rearrange(points, inds)
+  points = np.array(points).flatten()[0]
   if debug:
     print(points)
 
