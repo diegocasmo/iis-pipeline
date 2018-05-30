@@ -193,9 +193,6 @@ class FeatureReader:
 
 		# for each feature:
 		for i in range(len(ffilenames)):
-			if i == 0:
-				self.fclassifiers.append(float('nan'))
-				continue #TODO skipping chin_middle
 			# Read training data
 			fdata = read_file(ffilenames[i], dir_path)
 			ndata = read_file(nfilenames[i], dir_path)
