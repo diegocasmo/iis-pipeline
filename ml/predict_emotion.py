@@ -25,7 +25,7 @@ def predict_emotion(points, directory='./', debug=False):
           9,  10, 5, 11, 17,
           4,  18, 16, 6]
   points = rearrange(points, inds)
-  points = np.array(points).flatten()[0]
+  points = np.array(points).flatten()
   if debug:
     print(points)
 
