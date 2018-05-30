@@ -193,9 +193,6 @@ class FeatureReader:
 
 		# for each feature:
 		for i in range(len(ffilenames)):
-			if i == 0:
-				self.fclassifiers.append(float('nan'))
-				continue #TODO skipping chin_middle
 			# Read training data
 			fdata = read_file(ffilenames[i], dir_path)
 			ndata = read_file(nfilenames[i], dir_path)
@@ -320,7 +317,6 @@ class FeatureReader:
 					xpos, ypos = (int(x_im * scale_x) + x, int(y_im * scale_y) + y)
 					zpos = depth_image[ypos,xpos]
 					outdata[i] = [xpos,ypos,zpos]
-				outdata[0] = [float('nan'), float('nan'), float('nan')]
 				
 		# Create mask
 		mask = np.ones((self.image.shape[0],self.image.shape[1]))
@@ -343,7 +339,7 @@ class FeatureReader:
 		for i in range(len(arr)):
 			if np.isnan(arr[i][0]) or np.isnan(arr[i][1]):
 				continue
-			if i == 2:
+			if i == 3:
 				cv2.circle(self.image, (int(round(arr[i][0])),int(round(arr[i][1]))), 2, (0,0,255), -1)
 				continue
 			cv2.circle(self.image, (int(round(arr[i][0])),int(round(arr[i][1]))), 2, (0,255,0), -1)
