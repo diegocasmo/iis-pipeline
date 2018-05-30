@@ -317,7 +317,6 @@ class FeatureReader:
 					xpos, ypos = (int(x_im * scale_x) + x, int(y_im * scale_y) + y)
 					zpos = depth_image[ypos,xpos]
 					outdata[i] = [xpos,ypos,zpos]
-				outdata[0] = [float('nan'), float('nan'), float('nan')]
 				
 		# Create mask
 		mask = np.ones((self.image.shape[0],self.image.shape[1]))
