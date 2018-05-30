@@ -178,8 +178,9 @@ class FeatureReader:
 		self.depth_scale = depth_sensor.get_depth_scale()
 
 		# Add file names of the feat files and non-feat files here
-		ffilenames = ["chin_middle.txt", "inner_left_eyebrow.txt", "inner_left_eye_corner.txt", "inner_right_eyebrow.txt", "inner_right_eye_corner.txt", "left_ear_lobe.txt", "left_mouth_corner.txt", "left_nose_peak.txt", "left_temple.txt", "lower_lip_inner_middle.txt", "lower_lip_outer_middle.txt", "middle_left_eyebrow.txt", "middle_right_eyebrow.txt", "nose_saddle_left.txt", "nose_saddle_right.txt", "nose_tip.txt", "outer_left_eyebrow.txt", "outer_left_eye_corner.txt", "outer_right_eyebrow.txt", "outer_right_eye_corner.txt", "right_ear_lobe.txt", "right_mouth_corner.txt", "right_nose_peak.txt", "right_temple.txt", "upper_lip_outer_middle.txt"]
-		nfilenames = ["nchin_middle.txt", "ninner_left_eyebrow.txt", "ninner_left_eye_corner.txt", "ninner_right_eyebrow.txt", "ninner_right_eye_corner.txt", "nleft_ear_lobe.txt", "nleft_mouth_corner.txt", "nleft_nose_peak.txt", "nleft_temple.txt", "nlower_lip_inner_middle.txt", "nlower_lip_outer_middle.txt", "nmiddle_left_eyebrow.txt", "nmiddle_right_eyebrow.txt", "nnose_saddle_left.txt", "nnose_saddle_right.txt", "nnose_tip.txt", "nouter_left_eyebrow.txt", "nouter_left_eye_corner.txt", "nouter_right_eyebrow.txt", "nouter_right_eye_corner.txt", "nright_ear_lobe.txt", "nright_mouth_corner.txt", "nright_nose_peak.txt", "nright_temple.txt", "nupper_lip_outer_middle.txt"]
+
+		ffilenames = ["inner_left_eyebrow.txt", "inner_left_eye_corner.txt", "inner_right_eyebrow.txt", "inner_right_eye_corner.txt", "left_mouth_corner.txt", "left_nose_peak.txt", "lower_lip_outer_middle.txt", "middle_left_eyebrow.txt", "middle_right_eyebrow.txt", "nose_saddle_left.txt", "nose_saddle_right.txt", "nose_tip.txt", "outer_left_eyebrow.txt", "outer_left_eye_corner.txt", "outer_right_eyebrow.txt", "outer_right_eye_corner.txt", "right_mouth_corner.txt", "right_nose_peak.txt", "upper_lip_outer_middle.txt"]
+		nfilenames = ["ninner_left_eyebrow.txt", "ninner_left_eye_corner.txt", "ninner_right_eyebrow.txt", "ninner_right_eye_corner.txt", "nleft_mouth_corner.txt", "nleft_nose_peak.txt", "nlower_lip_outer_middle.txt", "nmiddle_left_eyebrow.txt", "nmiddle_right_eyebrow.txt", "nnose_saddle_left.txt", "nnose_saddle_right.txt", "nnose_tip.txt", "nouter_left_eyebrow.txt", "nouter_left_eye_corner.txt", "nouter_right_eyebrow.txt", "nouter_right_eye_corner.txt", "nright_mouth_corner.txt", "nright_nose_peak.txt", "nupper_lip_outer_middle.txt"]
 
 		for i in range(len(ffilenames)):
 			ffilenames[i] = dir_path + ffilenames[i]
@@ -246,13 +247,11 @@ class FeatureReader:
 
 				# upper left quadrant
 				# create smaller rectangles based on the large rectangles, with overlap
-				classifier_indices = [1, 2, 8, 11, 13, 16, 17] # which classifiers are relevant for the quadrant?
+				classifier_indices = [0, 1, 7, 9, 12, 13] # which classifiers are relevant for the quadrant?
 				chunks = sd.subdivide(im[:nose_index_y, :nose_index_x], quad_width_x, quad_width_y, quad_freq_x, quad_freq_y)
 				chunks = np.asarray(chunks)
 				chunks = chunks.reshape((len(chunks) ,-1))
 				for i in classifier_indices:
-					if i == 0:
-						continue #TODO skipping chin_middle
 					confidence_scores = self.fclassifiers[i].decision_function(chunks)
 					pos = np.argmin(confidence_scores)
 					x_quadrant, y_quadrant = np.unravel_index(pos, (2*quad_freq_x-1, 2*quad_freq_y-1))
@@ -267,13 +266,11 @@ class FeatureReader:
 
 				# upper right quadrant
 				# create smaller rectangles based on the large rectangles, with overlap
-				classifier_indices = [3, 4, 12, 14, 18, 19, 23] # which classifiers are relevant for the quadrant?
+				classifier_indices = [2, 3, 8, 10, 14, 15] # which classifiers are relevant for the quadrant?
 				chunks = sd.subdivide(im[:nose_index_y, nose_index_x:], quad_width_x, quad_width_y, quad_freq_x, quad_freq_y)
 				chunks = np.asarray(chunks)
 				chunks = chunks.reshape((len(chunks) ,-1))
 				for i in classifier_indices:
-					if i == 0:
-						continue #TODO skipping chin_middle
 					confidence_scores = self.fclassifiers[i].decision_function(chunks)
 					pos = np.argmin(confidence_scores)
 					x_quadrant, y_quadrant = np.unravel_index(pos, (2*quad_freq_x-1, 2*quad_freq_y-1))
@@ -288,13 +285,11 @@ class FeatureReader:
 
 				# lower left quadrant
 				# create smaller rectangles based on the large rectangles, with overlap
-				classifier_indices = [0, 5, 6, 7, 15, 24] # which classifiers are relevant for the quadrant?
+				classifier_indices = [4, 5, 6, 11, 18] # which classifiers are relevant for the quadrant?
 				chunks = sd.subdivide(im[nose_index_y:, :nose_index_x], quad_width_x, quad_width_y, quad_freq_x, quad_freq_y)
 				chunks = np.asarray(chunks)
 				chunks = chunks.reshape((len(chunks) ,-1))
 				for i in classifier_indices:
-					if i == 0:
-						continue #TODO skipping chin_middle
 					confidence_scores = self.fclassifiers[i].decision_function(chunks)
 					pos = np.argmin(confidence_scores)
 					x_quadrant, y_quadrant = np.unravel_index(pos, (2*quad_freq_x-1, 2*quad_freq_y-1))
@@ -309,13 +304,11 @@ class FeatureReader:
 
 				# lower right quadrant
 				# create smaller rectangles based on the large rectangles, with overlap
-				classifier_indices = [9, 10, 20, 21, 22] # which classifiers are relevant for the quadrant?
+				classifier_indices = [10, 16, 17] # which classifiers are relevant for the quadrant?
 				chunks = sd.subdivide(im[nose_index_y:, nose_index_x:], quad_width_x, quad_width_y, quad_freq_x, quad_freq_y)
 				chunks = np.asarray(chunks)
 				chunks = chunks.reshape((len(chunks) ,-1))
 				for i in classifier_indices:
-					if i == 0:
-						continue #TODO skipping chin_middle
 					confidence_scores = self.fclassifiers[i].decision_function(chunks)
 					pos = np.argmin(confidence_scores)
 					x_quadrant, y_quadrant = np.unravel_index(pos, (2*quad_freq_x-1, 2*quad_freq_y-1))
